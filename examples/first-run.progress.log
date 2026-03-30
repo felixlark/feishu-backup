@@ -1,0 +1,14 @@
+[backup] progress log: ~/Library/Application Support/feishu-backup/logs/20260331T010203Z.progress.log
+[backup] start mode=sync
+[backup] discovered spaces=4
+[space 1/4] start 丽娟的知识库 (7428864556937248770)
+[doc 1/128] start 首页 (7428864556937248770:KXSCwVjGRi3UcfkghXmcqxA6nff)
+[doc] export 首页 -> https://xmu-mars.feishu.cn/wiki/KXSCwVjGRi3UcfkghXmcqxA6nff
+[doc] archive 首页 -> liujuan-knowledge
+[new 1/128] 首页 -> liujuan-knowledge
+[space 2/4] start 厦门大学普适计算课题组 (7611111111111111111)
+[retry] list nodes for 7611111111111111111 parent=root due to frequency limit; sleeping 1.0s
+[backup] done spaces=4 docs=128 new=24 updated=7 skipped=95 deleted=2 failed=0
+[backup] summary ~/Library/Application Support/feishu-backup/logs/20260331T010203Z.summary.txt
+[backup] report ~/Library/Application Support/feishu-backup/logs/20260331T010203Z.report.md
+

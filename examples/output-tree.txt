@@ -1,0 +1,17 @@
+~/Documents/
+├── bozhi-docs/
+│   └── 厦门博智深度智能技术有限公司/
+│       ├── 首页.md
+│       └── 首页/
+│           └── image.png
+├── fire-impact/
+│   └── 丽娟的知识库/
+│       ├── 影响评估报告.md
+│       └── 影响评估报告/
+│           └── image.png
+└── liujuan-knowledge/
+    └── 丽娟的知识库/
+        ├── 首页.md
+        └── 首页/
+            └── image.png
+

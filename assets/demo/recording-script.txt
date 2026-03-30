@@ -1,0 +1,14 @@
+Feishu Backup demo script
+
+1. Show the README headline and quick start in the repo root.
+2. Show that the project is built on top of feishu-docx.
+3. Run `feishu-backup authorize` and complete OAuth in the browser.
+4. Run `feishu-backup sync`.
+5. Pause on real-time progress lines, especially:
+   - discovered spaces
+   - current document
+   - summary
+   - report
+6. Open `~/Documents` and show exported Markdown files.
+7. End on the GitHub repo URL and the one-line install command.
+
