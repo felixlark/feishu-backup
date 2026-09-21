@@ -34,9 +34,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/longbiaochen/feishu-backup"
-Repository = "https://github.com/longbiaochen/feishu-backup"
-Issues = "https://github.com/longbiaochen/feishu-backup/issues"
+Homepage = "https://github.com/felixlark/feishu-backup"
+Repository = "https://github.com/felixlark/feishu-backup"
+Issues = "https://github.com/felixlark/feishu-backup/issues"
 
 [project.scripts]
 feishu-backup = "feishu_backup:main"

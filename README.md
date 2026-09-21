@@ -17,7 +17,7 @@ In one sentence: back up Feishu knowledge bases to your local disk with incremen
 1. Install:
 
 ```bash
-pipx install git+https://github.com/longbiaochen/feishu-backup.git
+pipx install git+https://github.com/felixlark/feishu-backup.git
 ```
 
 2. Generate the local config:
@@ -84,7 +84,7 @@ See [examples/first-run.progress.log](./examples/first-run.progress.log), [examp
 ### Option 1: `pipx`
 
 ```bash
-pipx install git+https://github.com/longbiaochen/feishu-backup.git
+pipx install git+https://github.com/felixlark/feishu-backup.git
 ```
 
 ### Option 2: local checkout

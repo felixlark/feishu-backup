@@ -23,5 +23,5 @@ latest_summary="$(ls -t "${DEMO_STATE_ROOT}/logs/"*.summary.txt | head -n 1)"
 echo '$ cat latest summary'
 cat "${latest_summary}"
 echo
-echo "GitHub: https://github.com/longbiaochen/feishu-backup"
-echo "Install: pipx install git+https://github.com/longbiaochen/feishu-backup.git"
+echo "GitHub: https://github.com/felixlark/feishu-backup"
+echo "Install: pipx install git+https://github.com/felixlark/feishu-backup.git"

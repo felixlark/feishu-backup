@@ -28,11 +28,11 @@
 
 ## 结尾
 
-项目地址：`https://github.com/longbiaochen/feishu-backup`
+项目地址：`https://github.com/felixlark/feishu-backup`
 
 安装：
 
 ```bash
-pipx install git+https://github.com/longbiaochen/feishu-backup.git
+pipx install git+https://github.com/felixlark/feishu-backup.git
 ```
 

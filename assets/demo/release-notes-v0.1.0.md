@@ -14,7 +14,7 @@ Feishu Backup is a practical Feishu knowledge base backup workflow built on top 
 ## Install
 
 ```bash
-pipx install git+https://github.com/longbiaochen/feishu-backup.git
+pipx install git+https://github.com/felixlark/feishu-backup.git
 ```
 
 ## Commands
