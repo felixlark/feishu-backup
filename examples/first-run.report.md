@@ -16,6 +16,6 @@
 
 ## Created folders
 
-- `liujuan-knowledge`
-- `bozhi-docs`
+- `example-knowledge`
+- `example-docs`
 

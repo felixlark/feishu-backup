@@ -4,7 +4,7 @@
 
 In one sentence: back up Feishu knowledge bases to your local disk with incremental sync, document-level resume, local folder routing, and scheduled runs.
 
-![Feishu Backup demo](./assets/demo/feishu-backup-demo.gif)
+[Synthetic example output](./examples/first-run.progress.log)
 
 ## Why this instead of manual export?
 
@@ -60,11 +60,11 @@ feishu-backup sync
 [backup] progress log: ~/Library/Application Support/feishu-backup/logs/20260331T010203Z.progress.log
 [backup] start mode=sync
 [backup] discovered spaces=4
-[space 1/4] start 丽娟的知识库 (7428864556937248770)
-[doc 1/128] start 首页 (7428864556937248770:KXSCwVjGRi3UcfkghXmcqxA6nff)
-[doc] export 首页 -> https://xmu-mars.feishu.cn/wiki/KXSCwVjGRi3UcfkghXmcqxA6nff
-[doc] archive 首页 -> liujuan-knowledge
-[new 1/128] 首页 -> liujuan-knowledge
+[space 1/4] start 示例知识库 (7000000000000000001)
+[doc 1/128] start 首页 (7000000000000000001:exampleWikiNode)
+[doc] export 首页 -> https://example.feishu.cn/wiki/exampleWikiNode
+[doc] archive 首页 -> example-knowledge
+[new 1/128] 首页 -> example-knowledge
 [backup] done spaces=4 docs=128 new=24 updated=7 skipped=95 deleted=2 failed=0
 [backup] summary ~/Library/Application Support/feishu-backup/logs/20260331T010203Z.summary.txt
 [backup] report ~/Library/Application Support/feishu-backup/logs/20260331T010203Z.report.md
@@ -72,12 +72,14 @@ feishu-backup sync
 
 See [examples/first-run.progress.log](./examples/first-run.progress.log), [examples/first-run.report.md](./examples/first-run.report.md), and [examples/output-tree.txt](./examples/output-tree.txt).
 
-## Demo assets
+## Demo examples
 
-- Short demo GIF: [assets/demo/feishu-backup-demo.gif](./assets/demo/feishu-backup-demo.gif)
-- Short demo video: [assets/demo/feishu-backup-demo-short.mp4](./assets/demo/feishu-backup-demo-short.mp4)
-- OAuth approval screenshot: [assets/demo/feishu-backup-auth.jpg](./assets/demo/feishu-backup-auth.jpg)
-- Release notes draft: [assets/demo/release-notes-v0.1.0.md](./assets/demo/release-notes-v0.1.0.md)
+The text examples use synthetic organizations, knowledge-base names, IDs and URLs.
+
+- [Example progress log](./examples/first-run.progress.log)
+- [Example report](./examples/first-run.report.md)
+- [Example output tree](./examples/output-tree.txt)
+- [Release notes](./assets/demo/release-notes-v0.1.0.md)
 
 ## Installation
 
@@ -124,6 +126,8 @@ APP_ID=...
 APP_SECRET=...
 FEISHU_AUTH_MODE=oauth
 ```
+
+New schedules use the public project launchd identifier. Existing explicit `LAUNCHD_LABEL` settings remain supported. If the setting is absent, an existing backup job for the same state directory keeps its label. This update does not rename or reload an installed job.
 
 Useful optional settings:
 

@@ -2,7 +2,7 @@
 
 ## Repo Scope
 
-- Owner/escalation: Longbiao for backup workflow, local scheduling, and release docs.
+- Owner/escalation: felixlark for backup workflow, local scheduling, and release docs.
 - This repo owns the standalone `feishu-backup` CLI for Feishu knowledge-base backup on top of `feishu-docx`.
 - It is a backup workflow layer, not a replacement export engine.
 
