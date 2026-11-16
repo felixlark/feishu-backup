@@ -1,7 +1,7 @@
 #!/bin/zsh
 set -euo pipefail
 
-ROOT_DIR="/Users/longbiao/Projects/feishu-backup"
+ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 DEMO_STATE_ROOT="${ROOT_DIR}/.demo-state"
 DEMO_DOCS_ROOT="${HOME}/Documents/feishu-backup-demo"
 

@@ -6,3 +6,8 @@ __pycache__/
 build/
 dist/
 *.egg-info/
+
+# Local recordings may contain signed-in account or tenant details.
+/assets/demo/feishu-backup-auth.jpg
+/assets/demo/feishu-backup-demo.gif
+/assets/demo/feishu-backup-demo-short.mp4

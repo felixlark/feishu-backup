@@ -381,7 +381,7 @@ class FeishuBackupServiceTestCase(unittest.TestCase):
                 state_root=state_root,
                 feishu_auth_mode="tenant",
                 base_url="https://feishu.cn",
-                web_base_url="https://xmu-mars.feishu.cn",
+                web_base_url="https://example.feishu.cn",
                 web_session_cookie="session=abc",
                 web_csrf_token="csrf-token",
             )
@@ -413,7 +413,7 @@ class FeishuBackupServiceTestCase(unittest.TestCase):
             self.assertEqual(result["space_count"], 1)
             self.assertEqual(result["document_count"], 1)
             self.assertEqual(result["new"], 1)
-            self.assertEqual(exporter.calls[0]["url"], "https://xmu-mars.feishu.cn/wiki/wiki-node-1")
+            self.assertEqual(exporter.calls[0]["url"], "https://example.feishu.cn/wiki/wiki-node-1")
             self.assertEqual(service.web_client.ensure_available_calls, 1)
             self.assertTrue((documents_root / "ops" / "Ops Wiki" / "Runbook.md").exists())
 
@@ -447,6 +447,31 @@ class FeishuBackupServiceTestCase(unittest.TestCase):
                 self.assertEqual(payload["WorkingDirectory"], str(Path(__file__).resolve().parents[1]))
                 self.assertEqual(payload["EnvironmentVariables"]["STATE_ROOT"], str(state_root))
 
+    def test_upgrade_reuses_existing_schedule_when_env_omits_label(self):
+        with tempfile.TemporaryDirectory() as root:
+            home = Path(root)
+            state_root = home / "state"
+            state_root.mkdir()
+            (state_root / "env").write_text("APP_ID=example-id\nAPP_SECRET=example-secret\n")
+            agents = home / "Library" / "LaunchAgents"
+            agents.mkdir(parents=True)
+            legacy_label = "org.example.legacy-feishu-backup"
+            legacy_path = agents / f"{legacy_label}.plist"
+            legacy_path.write_bytes(plistlib.dumps({
+                "Label": legacy_label,
+                "ProgramArguments": ["/example/python", "-m", "feishu_backup", "sync"],
+                "EnvironmentVariables": {"STATE_ROOT": str(state_root)},
+            }))
+            with patch("pathlib.Path.home", return_value=home), patch.dict(
+                "os.environ", {"STATE_ROOT": str(state_root)}, clear=True
+            ):
+                config = BackupConfig.from_env()
+                self.assertEqual(config.launchd_label, legacy_label)
+                service = FeishuBackupService(config, exporter=FakeExporter(spaces=[], nodes_by_space={}),
+                                               classifier=FakeClassifier({}))
+                self.assertEqual(service.install_launchd(load=False), legacy_path)
+            self.assertEqual(list(agents.glob("*.plist")), [legacy_path])
+
     def test_backup_config_can_bootstrap_template_without_existing_secrets(self):
         with tempfile.TemporaryDirectory() as state_dir:
             state_root = Path(state_dir)
@@ -457,6 +482,7 @@ class FeishuBackupServiceTestCase(unittest.TestCase):
             self.assertEqual(config.state_root, state_root)
             self.assertTrue(str(config.documents_root).endswith("Documents"))
             self.assertEqual(config.feishu_auth_mode, "oauth")
+            self.assertEqual(config.launchd_label, "io.github.felixlark.feishu-backup")
             self.assertEqual(config.feishu_docx_cache_dir, state_root / "feishu-docx-auth")
             self.assertEqual(config.ollama_timeout_seconds, 180.0)
 
@@ -518,7 +544,7 @@ class FeishuBackupServiceTestCase(unittest.TestCase):
         with tempfile.TemporaryDirectory() as documents_dir, tempfile.TemporaryDirectory() as state_dir:
             documents_root = Path(documents_dir)
             state_root = Path(state_dir)
-            legacy_root = documents_root / "丽娟的知识库"
+            legacy_root = documents_root / "示例知识库"
             legacy_root.mkdir()
             (legacy_root / "首页.md").write_text("# home\n", encoding="utf-8")
             manifest_path = state_root / "manifest.json"
@@ -528,10 +554,10 @@ class FeishuBackupServiceTestCase(unittest.TestCase):
                     {
                         "documents": {
                             "doc-1": {
-                                "classified_folder": "丽娟的知识库",
-                                "relative_doc_path": "丽娟的知识库/首页.md",
-                                "relative_asset_dir": "丽娟的知识库/首页",
-                                "source_space_name": "丽娟的知识库",
+                                "classified_folder": "示例知识库",
+                                "relative_doc_path": "示例知识库/首页.md",
+                                "relative_asset_dir": "示例知识库/首页",
+                                "source_space_name": "示例知识库",
                             }
                         },
                         "deleted": {},
@@ -552,10 +578,10 @@ class FeishuBackupServiceTestCase(unittest.TestCase):
 
             result = service.normalize_folders()
 
-            self.assertTrue((documents_root / "lijuan-docs" / "首页.md").exists())
+            self.assertTrue((documents_root / "shili-docs" / "首页.md").exists())
             self.assertFalse(legacy_root.exists())
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            self.assertEqual(manifest["documents"]["doc-1"]["classified_folder"], "lijuan-docs")
+            self.assertEqual(manifest["documents"]["doc-1"]["classified_folder"], "shili-docs")
             self.assertTrue(result["normalized"])
 
     def test_reset_resume_removes_resume_state_file(self):
@@ -851,7 +877,7 @@ class NamePathArchiveClassifierTestCase(unittest.TestCase):
         classifier = NamePathArchiveClassifier()
         record = self.make_record(
             title="Impact Assessment Report",
-            source_space_name="Liujuan Knowledge Base",
+            source_space_name="Example Knowledge Base",
             source_path_hint="Impact Assessment Report",
         )
         result = classifier.classify(record, "# ignored", ["fire-impact-assessment", "attachments"])
@@ -873,12 +899,12 @@ class NamePathArchiveClassifierTestCase(unittest.TestCase):
         classifier = NamePathArchiveClassifier()
         record = self.make_record(
             title="Unmatched Document",
-            source_space_name="丽娟的知识库",
+            source_space_name="示例知识库",
             source_path_hint="misc/Unmatched Document",
         )
         result = classifier.classify(record, "# ignored", ["attachments", "ops"])
         self.assertFalse(result.matched_existing_folder)
-        self.assertEqual(result.folder_name, "lijuan-docs")
+        self.assertEqual(result.folder_name, "shili-docs")
 
 
 if __name__ == "__main__":

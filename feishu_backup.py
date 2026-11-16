@@ -41,7 +41,7 @@ DEFAULT_OLLAMA_MODEL = "qwen2.5:7b"
 DEFAULT_OLLAMA_TIMEOUT_SECONDS = 180.0
 DEFAULT_FEISHU_AUTH_MODE = "oauth"
 DEFAULT_OAUTH_REDIRECT_PORT = 9527
-DEFAULT_LAUNCHD_LABEL = "com.longbiao.feishu-backup"
+DEFAULT_LAUNCHD_LABEL = "io.github.felixlark.feishu-backup"
 DEFAULT_SCHEDULE_HOUR = 2
 DEFAULT_SCHEDULE_MINUTE = 15
 DEFAULT_WEB_USER_AGENT = (
@@ -256,6 +256,28 @@ class BackupConfig:
         return Path.home() / "Library" / "Application Support" / "feishu-backup"
 
     @classmethod
+    def default_launchd_label(cls, state_root: Path) -> str:
+        # Keep an existing schedule for this state when upgrading from an older
+        # default, without embedding a maintainer-specific identifier in code.
+        labels = set()
+        for path in (Path.home() / "Library" / "LaunchAgents").glob("*.plist"):
+            try:
+                payload = plistlib.loads(path.read_bytes())
+            except (OSError, ValueError, plistlib.InvalidFileException):
+                continue
+            if not isinstance(payload, dict):
+                continue
+            environment = payload.get("EnvironmentVariables", {})
+            arguments = payload.get("ProgramArguments", [])
+            if (isinstance(environment, dict) and environment.get("STATE_ROOT") == str(state_root)
+                    and isinstance(arguments, list) and arguments[-3:] == ["-m", "feishu_backup", "sync"]
+                    and payload.get("Label") == path.stem):
+                labels.add(path.stem)
+        if len(labels) > 1:
+            raise SystemExit("Multiple existing backup schedules use this STATE_ROOT; set LAUNCHD_LABEL explicitly.")
+        return next(iter(labels), DEFAULT_LAUNCHD_LABEL)
+
+    @classmethod
     def from_env(
         cls,
         *,
@@ -305,7 +327,7 @@ class BackupConfig:
             ),
             space_ids=tuple(parse_csv(get_setting("SPACE_IDS", env_file_values))),
             space_name_allowlist=tuple(parse_csv(get_setting("SPACE_NAME_ALLOWLIST", env_file_values))),
-            launchd_label=get_setting("LAUNCHD_LABEL", env_file_values, DEFAULT_LAUNCHD_LABEL) or DEFAULT_LAUNCHD_LABEL,
+            launchd_label=get_setting("LAUNCHD_LABEL", env_file_values) or cls.default_launchd_label(state_root),
             launchd_hour=int(get_setting("LAUNCHD_HOUR", env_file_values, str(DEFAULT_SCHEDULE_HOUR)) or DEFAULT_SCHEDULE_HOUR),
             launchd_minute=int(get_setting("LAUNCHD_MINUTE", env_file_values, str(DEFAULT_SCHEDULE_MINUTE)) or DEFAULT_SCHEDULE_MINUTE),
             web_base_url=(get_setting("FEISHU_WEB_BASE_URL", env_file_values) or "").rstrip("/") or None,
