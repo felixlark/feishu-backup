@@ -56,12 +56,6 @@ DEFAULT_CATEGORY_EXCLUDES = {
 }
 STRICT_FOLDER_RE = re.compile(r"^[a-z0-9]+-[a-z0-9]+$")
 DEFAULT_SECOND_SLUG_TOKEN = "docs"
-COMMON_CHINESE_PREFIXES = (
-    "厦门大学",
-    "厦门",
-    "漳州",
-    "龙文",
-)
 COMMON_CHINESE_SUFFIXES = (
     "的知识库",
     "知识库",
@@ -98,10 +92,6 @@ def ascii_slug_tokens(value: str) -> list[str]:
         return tokens
     if lazy_pinyin is not None:
         simplified = value.strip()
-        for prefix in COMMON_CHINESE_PREFIXES:
-            if simplified.startswith(prefix):
-                simplified = simplified[len(prefix):]
-                break
         for suffix in COMMON_CHINESE_SUFFIXES:
             if simplified.endswith(suffix):
                 simplified = simplified[: -len(suffix)]
